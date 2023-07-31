@@ -1,5 +1,6 @@
-export interface User {
-  id: number;
+import {Document} from 'mongodb'
+
+export interface User extends Document {
   username: string;
   name: string;
   email: string;

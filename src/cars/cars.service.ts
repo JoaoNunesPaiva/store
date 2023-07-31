@@ -1,45 +1,68 @@
-import { cars } from "../db/index";
+import {ObjectId} from 'mongodb'
 import { Car } from "./cars.model";
-// import { MongoClient } from "mongodb"; --- not active
+import { getDb } from "../db/mongo";
 
-export const getAll = () => cars;
+const db = { cars: [] as Car[] }; // TODO: DEBUG ONLY
 
-export const getById = (id: string) => cars.find((car) => car.id === parseInt(id));
+export const getAll = async () => {
+  const db = await getDb();
+  const collection = db.collection<Car>("cars");
 
-export const create = (name: string, manufacturer: string, maxSpeed: number, price: number) => {
+  let query = {};
+  const result = await collection.find<Car>(query)
+    .limit(50)
+    .toArray();
+
+  return result;
+};
+
+export const getById = async (id: string) => {
+  const db = await getDb();
+  const collection = db.collection<Car>("cars");
+
+  let query = { _id: new ObjectId(id) };
+  let result = await collection.findOne<Car>(query);
+
+  return result;
+};
+
+export const create = async (name: string, manufacturer: string, maxSpeed: number, price: number) => {
+  const db = await getDb();
+  const collection = db.collection<Car>("cars");
+
   const newCar: Car = {
-    id: (cars.length + 1).toString(),
     name,
     manufacturer,
     maxSpeed,
     price,
   };
-  cars.push(newCar);
 
-  return newCar;
+  return await collection.insertOne(newCar);
 };
 
-export const update = (
-  id: string,
-  name: string,
-  manufacturer: string,
-  maxSpeed: number,
-  price: number,
-) => {
-  const car = getById(id);
+export const update = async (id: string, name: string, manufacturer: string, maxSpeed: number, price: number) => {
+  const db = await getDb();
+  const collection = db.collection<Car>("cars");
 
-  if (!car) {
-    return undefined;
-  }
-
-  car.name = name;
-  car.manufacturer = manufacturer;
-  car.maxSpeed = maxSpeed;
-  car.price = price;
-
-  return car;
+  let query = { _id: new ObjectId(id) };
+  const updates = {
+    $set: {
+      name,
+      manufacturer,
+      maxSpeed,
+      price,
+    }
+  };
+  let result = await collection.updateOne(query, updates);
+  return result;
 };
 
-export const remove = (id: string) => {
-  cars = cars.filter((car) => car.id !== parseInt(id));
+export const remove = async (id: string) => {
+  const db = await getDb();
+  const collection = db.collection<Car>("cars");
+
+  let query = { _id: new ObjectId(id) };
+  let result = await collection.deleteOne(query);
+
+  return result;
 };

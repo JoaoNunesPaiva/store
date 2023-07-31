@@ -36,19 +36,19 @@ const validationPost = [
 type RequestPost = Request<{}, unknown, {userId: number, products: Product[]}>;
 
 router.post("/", validationPost, (req: RequestPost, res: Response) => {
-  const validationRes = validationResult(req);
-  if (!validationRes.isEmpty()) {
-    return res.status(400).json({ error: validationRes.array() });
-  }
+  throw new Error('NOT IMPLEMENTED')
+  // const validationRes = validationResult(req);
+  // if (!validationRes.isEmpty()) {
+  //   return res.status(400).json({ error: validationRes.array() });
+  // }
 
-  const user = getById(req.body.userId.toString());
-  if (!user) {
-    return res.status(404).json({ error: "user not found" });
-  }
+  // const user = getById(req.body.userId.toString());
+  // if (!user) {
+  //   return res.status(404).json({ error: "user not found" });
+  // }
 
-  const order = create(user.id, req.body.products);
-  addRewardPoints(user.id, order.rewardPoints);
+  // const order = create(user.id, req.body.products);
+  // addRewardPoints(user.id, order.rewardPoints);
 
-  res.status(201).json(order);
+  // res.status(201).json(order);
 });
-

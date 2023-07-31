@@ -1,4 +1,4 @@
-// import { Document } from "mongodb"; --- not active 
+import { Document } from "mongodb";
 
 export interface Car extends Document {
   name: string;
