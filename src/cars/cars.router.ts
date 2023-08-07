@@ -23,8 +23,8 @@ router.get("/:id", async (req: Request, res: Response) => {
 const validationPost = [
   body("name").notEmpty().exists(),
   body("manufacturer").notEmpty().exists(),
-  body("maxSpeed").notEmpty().isNumeric().exists(),
-  body("price").notEmpty().isNumeric().exists(),
+  body("maxSpeed").notEmpty().exists().isNumeric().isInt({ min: 2 }),
+  body("price").notEmpty().exists().isNumeric().isInt({ min: 2 }),
 ];
 type RequestPost = Request<
   { id: string },
@@ -61,8 +61,8 @@ router.post("/", validationPost, async (req: RequestPost, res: Response) => {
 const validationPut = [
   body("name").isString().notEmpty().exists(),
   body("manufacturer").isString().notEmpty().exists(),
-  body("maxSpeed").notEmpty().isNumeric().exists(),
-  body("price").notEmpty().isNumeric().exists(),
+  body("maxSpeed").notEmpty().exists().isNumeric().isInt({ min: 2 }),
+  body("price").notEmpty().exists().isNumeric().isInt({ min: 2 }),
 ];
 type RequestPut = Request<
   { id: string },
